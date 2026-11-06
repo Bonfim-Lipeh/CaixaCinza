@@ -1,0 +1,456 @@
+{
+  "info": {
+    "_postman_id": "c0ffee00-0000-4000-8000-000000000001",
+    "name": "FoodExpress API Tests",
+    "description": "Testes caixa cinza de autenticação (Supabase Auth / GoTrue) - FoodExpress.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "CT01 - Login Válido",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"CT01 - Status code é 200\", function () { pm.response.to.have.status(200); });",
+              "pm.test(\"CT01 - Resposta contém access_token\", function () {",
+              "  var j = pm.response.json();",
+              "  pm.expect(j).to.have.property(\"access_token\");",
+              "  pm.expect(j.token_type).to.eql(\"bearer\");",
+              "  pm.expect(j.user.email).to.eql(pm.environment.get(\"email\"));",
+              "  pm.environment.set(\"access_token\", j.access_token);",
+              "});",
+              "pm.test(\"CT01 - Tempo de resposta < 2000 ms\", function () { pm.expect(pm.response.responseTime).to.be.below(2000); });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "apikey",
+            "value": "{{api_key}}",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{api_key}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/auth/v1/token?grant_type=password",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "auth",
+            "v1",
+            "token"
+          ],
+          "query": [
+            {
+              "key": "grant_type",
+              "value": "password"
+            }
+          ]
+        },
+        "description": "Credenciais corretas. Esperado: 200 + access_token."
+      },
+      "response": []
+    },
+    {
+      "name": "CT02 - Senha Incorreta",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"CT02 - Status code é 400\", function () { pm.response.to.have.status(400); });",
+              "pm.test(\"CT02 - error_code é invalid_credentials\", function () { pm.expect(pm.response.json().error_code).to.eql(\"invalid_credentials\"); });",
+              "pm.test(\"CT02 - Mensagem de erro esperada\", function () { pm.expect(pm.response.json().msg).to.include(\"Invalid login credentials\"); });",
+              "pm.test(\"CT02 - Nenhum access_token retornado\", function () { pm.expect(pm.response.json()).to.not.have.property(\"access_token\"); });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "apikey",
+            "value": "{{api_key}}",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{api_key}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password_errada}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/auth/v1/token?grant_type=password",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "auth",
+            "v1",
+            "token"
+          ],
+          "query": [
+            {
+              "key": "grant_type",
+              "value": "password"
+            }
+          ]
+        },
+        "description": "E-mail válido, senha errada. Esperado: 400 invalid_credentials."
+      },
+      "response": []
+    },
+    {
+      "name": "CT03 - Usuário Inexistente",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"CT03 - Status code é 400\", function () { pm.response.to.have.status(400); });",
+              "pm.test(\"CT03 - error_code é invalid_credentials\", function () { pm.expect(pm.response.json().error_code).to.eql(\"invalid_credentials\"); });",
+              "pm.test(\"CT03 - Mensagem de erro esperada\", function () { pm.expect(pm.response.json().msg).to.include(\"Invalid login credentials\"); });",
+              "pm.test(\"CT03 - Nenhum access_token retornado\", function () { pm.expect(pm.response.json()).to.not.have.property(\"access_token\"); });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "apikey",
+            "value": "{{api_key}}",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{api_key}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"{{email_inexistente}}\",\n  \"password\": \"{{password}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/auth/v1/token?grant_type=password",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "auth",
+            "v1",
+            "token"
+          ],
+          "query": [
+            {
+              "key": "grant_type",
+              "value": "password"
+            }
+          ]
+        },
+        "description": "E-mail não cadastrado. Esperado: acesso negado (400)."
+      },
+      "response": []
+    },
+    {
+      "name": "CT04 - Campos Vazios",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"CT04 - Status code é 400\", function () { pm.response.to.have.status(400); });",
+              "pm.test(\"CT04 - error_code é validation_failed\", function () { pm.expect(pm.response.json().error_code).to.eql(\"validation_failed\"); });",
+              "pm.test(\"CT04 - Mensagem de erro esperada\", function () { pm.expect(pm.response.json().msg).to.include(\"required\"); });",
+              "pm.test(\"CT04 - Nenhum access_token retornado\", function () { pm.expect(pm.response.json()).to.not.have.property(\"access_token\"); });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "apikey",
+            "value": "{{api_key}}",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{api_key}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"\",\n  \"password\": \"\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/auth/v1/token?grant_type=password",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "auth",
+            "v1",
+            "token"
+          ],
+          "query": [
+            {
+              "key": "grant_type",
+              "value": "password"
+            }
+          ]
+        },
+        "description": "E-mail e senha vazios. Esperado: erro de validação."
+      },
+      "response": []
+    },
+    {
+      "name": "CT05 - Credenciais Inválidas (formato)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"CT05 - Status code é 400\", function () { pm.response.to.have.status(400); });",
+              "pm.test(\"CT05 - error_code é invalid_credentials\", function () { pm.expect(pm.response.json().error_code).to.eql(\"invalid_credentials\"); });",
+              "pm.test(\"CT05 - Mensagem de erro esperada\", function () { pm.expect(pm.response.json().msg).to.include(\"Invalid login credentials\"); });",
+              "pm.test(\"CT05 - Nenhum access_token retornado\", function () { pm.expect(pm.response.json()).to.not.have.property(\"access_token\"); });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "apikey",
+            "value": "{{api_key}}",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{api_key}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"isto-nao-e-um-email\",\n  \"password\": \"123\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/auth/v1/token?grant_type=password",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "auth",
+            "v1",
+            "token"
+          ],
+          "query": [
+            {
+              "key": "grant_type",
+              "value": "password"
+            }
+          ]
+        },
+        "description": "E-mail malformado e senha curta. Esperado: mensagem de erro."
+      },
+      "response": []
+    },
+    {
+      "name": "CT06 - Sem header apikey",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"CT06 - Status code é 401\", function () { pm.response.to.have.status(401); });",
+              "pm.test(\"CT06 - Mensagem do gateway: No API key found in request\", function () { pm.expect(pm.response.text()).to.include(\"No API key found in request\"); });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/auth/v1/token?grant_type=password",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "auth",
+            "v1",
+            "token"
+          ],
+          "query": [
+            {
+              "key": "grant_type",
+              "value": "password"
+            }
+          ]
+        },
+        "description": "Complementar: gateway deve rejeitar requisição sem apikey."
+      },
+      "response": []
+    },
+    {
+      "name": "CT07 - apikey inválida",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"CT07 - Status code é 401\", function () { pm.response.to.have.status(401); });",
+              "pm.test(\"CT07 - Mensagem do gateway: Invalid API key\", function () { pm.expect(pm.response.text()).to.include(\"Invalid API key\"); });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "apikey",
+            "value": "chave-invalida-123",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer chave-invalida-123",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/auth/v1/token?grant_type=password",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "auth",
+            "v1",
+            "token"
+          ],
+          "query": [
+            {
+              "key": "grant_type",
+              "value": "password"
+            }
+          ]
+        },
+        "description": "Complementar: gateway deve rejeitar apikey inválida."
+      },
+      "response": []
+    }
+  ]
+}
