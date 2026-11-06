@@ -2,7 +2,7 @@
 
 # FoodExpress — Testes Funcionais Caixa Cinza da API de Autenticação (Supabase + Postman)
 
-**UniFacens** · Cursos Tecnológicos · **AS406TSN3** · UX/UI e Testes de Software · **Aula 11**
+**UniFacens** · Curso Análise e Desenvolvimento de Sistemas · **AS406TSN3** · UX/UI e Testes de Software · **Aula 11**
 
 </div>
 
