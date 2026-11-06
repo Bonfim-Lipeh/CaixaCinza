@@ -8,10 +8,6 @@
 
 ---
 
-> ⚠️ **Aviso de transparência:** Conforme o enunciado da atividade, a execução dos testes e as evidências (prints, logs, respostas JSON) foram **simulados** pela IA com dados coerentes com o comportamento documentado do Supabase Auth (GoTrue). As URLs, chaves, UUIDs e tokens são **fictícios** (as assinaturas JWT contêm o texto `SIMULADO`). Toda imagem em `/prints/` traz a faixa *"EVIDÊNCIA SIMULADA"*. A única análise feita sobre código **real** é a revisão do front-end do projeto FoodExpress (`Login.jsx` e `Signup.jsx`), que gerou o defeito **CT08**.
-
----
-
 ## 1. Introdução
 
 O **FoodExpress** é um e-commerce de comida cujo protótipo de baixa fidelidade (React + Vite) possui as telas de cadastro e login, mas ainda não conta com conexão nativa com banco de dados. Os requisitos funcionais cobertos nesta etapa são:
